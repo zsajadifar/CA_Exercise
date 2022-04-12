@@ -1,0 +1,338 @@
+//Module: CPU
+//Function: CPU is the top design of the RISC-V processor
+
+//Inputs:
+// clk: main clock
+// arst_n: reset 
+// enable: Starts the execution
+// addr_ext: Address for reading/writing content to Instruction Memory
+// wen_ext: Write enable for Instruction Memory
+// ren_ext: Read enable for Instruction Memory
+// wdata_ext: Write word for Instruction Memory
+// addr_ext_2: Address for reading/writing content to Data Memory
+// wen_ext_2: Write enable for Data Memory
+// ren_ext_2: Read enable for Data Memory
+// wdata_ext_2: Write word for Data Memory
+
+// Outputs:
+// rdata_ext: Read data from Instruction Memory
+// rdata_ext_2: Read data from Data Memory
+
+
+
+module cpu(
+      input  wire         clk,
+      input  wire         arst_n,
+      input  wire         enable,
+      input  wire [63:0]  addr_ext,
+      input  wire         wen_ext,
+      input  wire         ren_ext,
+      input  wire [31:0]  wdata_ext,
+      input  wire [63:0]  addr_ext_2,
+      input  wire         wen_ext_2,
+      input  wire         ren_ext_2,
+      input  wire [63:0]  wdata_ext_2,
+      
+      output wire [31:0]  rdata_ext,
+      output wire [63:0]  rdata_ext_2
+
+   );
+
+wire              zero_flag,zero_flag_mem;
+wire [      63:0] updated_pc, updated_pc_id, updated_pc_ex, updated_pc_mem,
+                  current_pc,
+                  branch_pc, branch_pc_mem,
+                  jump_pc, jump_pc_mem;
+wire [      31:0] instruction, instruction_id, instruction_ex, instruction_mem, instruction_wb;
+wire [       1:0] alu_op_mux, alu_op, alu_op_ex,
+                  fwd_mux_1,fwd_mux_2;
+wire [       3:0] alu_control;
+wire              reg_dst,
+                  jump_mux, jump, jump_ex, jump_mem,
+                  branch_mux, branch, branch_ex, branch_mem,
+                  mem_read_mux, mem_read, mem_read_ex, mem_read_mem,
+                  mem_write_mux, mem_write, mem_write_ex, mem_write_mem,
+                  reg_write_mux, reg_write, reg_write_ex, reg_write_mem, reg_write_wb,
+                  mem_2_reg_mux, mem_2_reg, mem_2_reg_ex, mem_2_reg_mem, mem_2_reg_wb,
+                  alu_src_mux, alu_src, alu_src_ex;
+wire [       4:0] regfile_waddr;
+wire [      63:0] regfile_wdata,
+                  mem_data, mem_data_wb,
+                  alu_out, alu_out_mem, alu_out_wb,
+                  regfile_rdata_1, regfile_rdata_1_ex,
+                  regfile_rdata_2, regfile_rdata_2_ex, regfile_rdata_2_mem,
+                  alu_operand_2,
+                  fwd_mux_out_1, fwd_mux_out_2;
+wire signed [63:0] immediate_extended, immediate_extended_ex;
+wire              mux_hazard_sel, pc_write, if_id_write;
+wire [       9:0] mux_hazard_out;
+
+// IF stage begin 
+pc #(
+   .DATA_W(64)
+) program_counter (
+   .clk       (clk       ),
+   .arst_n    (arst_n    ),
+   .branch_pc (branch_pc_mem ),
+   .jump_pc   (jump_pc_mem   ),
+   .zero_flag (zero_flag_mem ),
+   .branch    (branch_mem    ),
+   .jump      (jump_mem      ),
+   .current_pc(current_pc),
+   .enable    (enable && pc_write),
+   .updated_pc(updated_pc)
+);
+
+sram_BW32 #(
+   .ADDR_W(9 ),
+   .DATA_W(32)
+) instruction_memory(
+   .clk      (clk           ),
+   .addr     (current_pc    ),
+   .wen      (1'b0          ),
+   .ren      (1'b1          ),
+   .wdata    (32'b0         ),
+   .rdata    (instruction   ),   
+   .addr_ext (addr_ext      ),
+   .wen_ext  (wen_ext       ), 
+   .ren_ext  (ren_ext       ),
+   .wdata_ext(wdata_ext     ),
+   .rdata_ext(rdata_ext     )
+);
+// IF stage end
+
+// Pipeline: IF_ID register begin 
+reg_arstn_en#(
+   .DATA_W(96)
+)
+pipeline_IF_ID(
+   .clk     (clk),
+   .arst_n  (arst_n),
+   .en      (enable && if_id_write),
+   .din     ({updated_pc, instruction}),
+   .dout    ({updated_pc_id, instruction_id})
+);
+// Pipeline: IF_ID register end
+
+// ID stage start
+control_unit control_unit(
+   .opcode   (instruction_id[6:0]),
+   .alu_op   (alu_op_mux          ),
+   .reg_dst  (reg_dst         ),
+   .branch   (branch_mux          ),
+   .mem_read (mem_read_mux        ),
+   .mem_2_reg(mem_2_reg_mux       ),
+   .mem_write(mem_write_mux       ),
+   .alu_src  (alu_src_mux         ),
+   .reg_write(reg_write_mux       ),
+   .jump     (jump_mux            )
+);
+
+register_file #(
+   .DATA_W(64)
+) register_file(
+   .clk      (clk               ),
+   .arst_n   (arst_n            ),
+   .reg_write(reg_write_wb      ),
+   .raddr_1  (instruction_id[19:15]),
+   .raddr_2  (instruction_id[24:20]),
+   .waddr    (instruction_wb[11:7] ),
+   .wdata    (regfile_wdata     ),
+   .rdata_1  (regfile_rdata_1   ),
+   .rdata_2  (regfile_rdata_2   )
+);
+
+immediate_extend_unit immediate_extend_u(
+    .instruction         (instruction_id),
+    .immediate_extended  (immediate_extended)
+);
+
+hazard_detection hazard_detect(
+   .rd_ex              (instruction_ex[11:7]),
+   .rs1_id             (instruction_id[19:15]),
+   .rs2_id             (instruction_id[24:20]),
+   .mem_read_ex        (mem_read_ex),
+   .pc_write           (pc_write),
+   .if_id_write        (if_id_write),
+   .mux_hazard_sel     (mux_hazard_sel)
+);
+
+mux_2 #(
+   .DATA_W(9)
+) hazard_mux(
+   .input_a ({alu_op_mux, alu_src_mux, branch_mux, jump_mux, mem_read_mux, 
+              mem_write_mux, mem_2_reg_mux, reg_write_mux}),
+   .input_b (9'b0       ),
+   .select_a(mux_hazard_sel     ),
+   .mux_out ({alu_op, alu_src, branch, jump_, mem_read, 
+              mem_write, mem_2_reg, reg_write})
+);
+
+// ID stage end
+
+// Pipline: ID_EX register begin
+reg_arstn_en#(
+.DATA_W(297)
+)
+pipeline_ID_EX(
+   .clk     (clk),
+   .arst_n  (arst_n),
+   .en      (enable),
+   .din     ({alu_op, alu_src, branch, jump_, mem_read, 
+              mem_write, mem_2_reg, reg_write,                                                             // Ctrl Unit: 9 bits
+              updated_pc_id, regfile_rdata_1, regfile_rdata_2,                            // 64 + 64 + 64 bits
+              immediate_extended,                                                         // 64 bits
+              instruction_id                                                              // 32 bits
+            }),
+   .dout    ({alu_op_ex, alu_src_ex, branch_ex, jump_ex,  mem_read_ex, mem_write_ex, mem_2_reg_ex, reg_write_ex,
+              updated_pc_ex, regfile_rdata_1_ex, regfile_rdata_2_ex,                // 64 + 64 + 64 bits
+              immediate_extended_ex,                                                // 64 bits
+              instruction_ex                                                        // 32 bits
+            })
+);
+// Pipline: ID_EX register end
+
+// EX stage start
+alu_control alu_ctrl(
+   .func7_5        (instruction_ex[30]   ),
+   .func7_0        (instruction_ex[25]   ),
+   .func3          (instruction_ex[14:12]),
+   .alu_op         (alu_op_ex            ),
+   .alu_control    (alu_control       )
+);
+
+forward_unit fwd_u(
+   .rs1_ex          (instruction_ex[19:15]),
+   .rs2_ex          (instruction_ex[24:20]),
+   .rd_mem          (instruction_mem[11:7]),
+   .rd_wb           (instruction_wb[11:7] ),
+   .reg_write_mem   (reg_write_mem        ),
+   .reg_write_wb    (reg_write_wb         ),
+
+   .forwardA       (fwd_mux_1),
+   .forwardB       (fwd_mux_2)
+);
+
+mux_3 #(
+   .DATA_W(64)
+) fwd_unit_alu_op1 (
+   .input_a (regfile_rdata_1_ex    ),
+   .input_b (regfile_wdata         ),
+   .input_c (alu_out_mem           ),
+   .sel     (fwd_mux_1             ),
+   .mux_out (fwd_mux_out_1         )
+);
+
+mux_3 #(
+   .DATA_W(64)
+) fwd_unit_alu_op2 (
+   .input_a (regfile_rdata_2_ex    ),
+   .input_b (regfile_wdata         ),
+   .input_c (alu_out_mem           ),
+   .sel     (fwd_mux_2             ),
+   .mux_out (fwd_mux_out_2         )
+);
+
+mux_2 #(
+   .DATA_W(64)
+) alu_operand_mux (
+   .input_a (immediate_extended_ex),
+   .input_b (fwd_mux_out_2        ),
+   .select_a(alu_src_ex           ),
+   .mux_out (alu_operand_2        )
+);
+
+alu#(
+   .DATA_W(64)
+) alu(
+   .alu_in_0  (fwd_mux_out_1   ),
+   .alu_in_1  (alu_operand_2   ),
+   .alu_ctrl  (alu_control     ),
+   .alu_out   (alu_out         ),
+   .zero_flag (zero_flag       ),
+   .overflow  (                )
+);
+
+branch_unit#(
+   .DATA_W(64)
+)branch_unit(
+   .updated_pc         (updated_pc_ex        ),
+   .immediate_extended (immediate_extended_ex),
+   .branch_pc          (branch_pc         ),
+   .jump_pc            (jump_pc           )
+);
+// EX stage end
+
+
+// Pipline: EX_MEM register start
+reg_arstn_en#(
+   .DATA_W(268)
+)
+pipeline_EX_MEM(
+   .clk     (clk),
+   .arst_n  (arst_n),
+   .en      (enable),
+   .din     ({branch_ex, jump_ex, mem_read_ex, mem_write_ex, mem_2_reg_ex, reg_write_ex,        // 6 bits
+              branch_pc, jump_pc, alu_out, zero_flag,                                  // 64 + 64 + 64 + 1 bits
+              regfile_rdata_2_ex,                                                      // 64 bits
+              instruction_ex[11:7]                                                     // 5 bits
+            }),
+   .dout    ({branch_mem, jump_mem, mem_read_mem, mem_write_mem, mem_2_reg_mem, reg_write_mem,
+              branch_pc_mem, jump_pc_mem, alu_out_mem, zero_flag_mem,
+              regfile_rdata_2_mem,
+              instruction_mem[11:7]
+            })
+);
+// Pipline: EX_MEM register end
+
+// MEM stage start
+sram_BW64 #(
+   .ADDR_W(10),
+   .DATA_W(64)
+) data_memory(
+   .clk      (clk                ),
+   .addr     (alu_out_mem        ),
+   .wen      (mem_write_mem      ),
+   .ren      (mem_read_mem       ),
+   .wdata    (regfile_rdata_2_mem),
+   .rdata    (mem_data       ),   
+   .addr_ext (addr_ext_2     ),
+   .wen_ext  (wen_ext_2      ),
+   .ren_ext  (ren_ext_2      ),
+   .wdata_ext(wdata_ext_2    ),
+   .rdata_ext(rdata_ext_2    )
+);
+// MEM stage end
+
+// Pipline: MEM_WB register start
+reg_arstn_en#(
+   .DATA_W(135)
+)
+pipeline_MEM_WB(
+   .clk     (clk),
+   .arst_n  (arst_n),
+   .en      (enable),
+   .din     ({mem_2_reg_mem, reg_write_mem,  // 2 bits
+              mem_data, alu_out_mem,         // 64 + 64 bits
+              instruction_mem[11:7]          // 5 bits
+            }),
+   .dout    ({mem_2_reg_wb, reg_write_wb,
+              mem_data_wb, alu_out_wb,
+              instruction_wb[11:7]
+            })
+);
+// Pipline: MEM_WB register end
+
+// WB stage start
+mux_2 #(
+   .DATA_W(64)
+) regfile_data_mux (
+   .input_a  (mem_data_wb     ),
+   .input_b  (alu_out_wb      ),
+   .select_a (mem_2_reg_wb    ),
+   .mux_out  (regfile_wdata   )
+);
+// WB stage end
+
+
+endmodule
