@@ -1,0 +1,161 @@
+ 
+****************************************
+Report : area
+Design : cpu
+Version: N-2017.09-SP3
+Date   : Tue Apr 12 14:47:30 2022
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'cpu' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    saed32rvt_tt1p05v25c (File: /users/micas/micas/design/generic/synopsys_32nm/SAED32_EDK/lib/stdcell_rvt/db_ccs/saed32rvt_tt1p05v25c.db)
+    saed32sram_tt1p05v25c (File: /users/micas/micas/design/generic/synopsys_32nm/SAED32_EDK/lib/sram/db_ccs/saed32sram_tt1p05v25c.db)
+
+Number of ports:                         5395
+Number of nets:                         18563
+Number of cells:                        13123
+Number of combinational cells:           9941
+Number of sequential cells:              3103
+Number of macros/black boxes:              20
+Number of buf/inv:                        435
+Number of references:                      23
+
+Combinational area:              26283.572478
+Buf/Inv area:                      558.354370
+Noncombinational area:           18185.528380
+Macro/Black Box area:           379865.820312
+Net Interconnect area:           37812.161172
+
+Total cell area:                424334.921171
+Total area:                     462147.082343
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area                Local cell area
+                                  --------------------  ----------------------------------- 
+Hierarchical cell                 Absolute     Percent  Combi-      Noncombi-   Black-
+                                  Total        Total    national    national    boxes        Design
+--------------------------------  -----------  -------  ----------  ----------  -----------  ----------------------------------------------
+cpu                               424334.9212    100.0     96.8289      0.0000       0.0000  cpu
+alu                                15000.8496      3.5  15000.8496      0.0000       0.0000  alu_DATA_W64
+alu_ctrl                              43.4586      0.0     43.4586      0.0000       0.0000  alu_control
+alu_operand_mux                      163.9229      0.0    163.9229      0.0000       0.0000  mux_2_DATA_W64_3
+branch_unit                           95.5581      0.0     95.5581      0.0000       0.0000  branch_unit_DATA_W64
+control_unit                          33.0387      0.0     33.0387      0.0000       0.0000  control_unit
+data_memory                       305706.9903     72.0   1814.3340      0.0000  303892.6562  sram_BW64_ADDR_W10_DATA_W64
+fwd_u                                 98.3537      0.0     98.3537      0.0000       0.0000  forward_unit
+fwd_unit_alu_op1                     220.8511      0.1    220.8511      0.0000       0.0000  mux_3_DATA_W64_1
+fwd_unit_alu_op2                     220.8511      0.1    220.8511      0.0000       0.0000  mux_3_DATA_W64_0
+hazard_mux                            12.1989      0.0     12.1989      0.0000       0.0000  mux_2_DATA_W9
+hazarddetection                       44.9835      0.0     44.9835      0.0000       0.0000  hazard_detection
+immediate_extend_u                    55.4034      0.0     55.4034      0.0000       0.0000  immediate_extend_unit
+instruction_memory                 76463.6620     18.0    490.4979      0.0000   75973.1641  sram_BW32_ADDR_W9_DATA_W32
+pipeline_EX_MEM                      973.6257      0.2      0.0000    967.7804       0.0000  reg_arstn_en_DATA_W268
+pipeline_EX_MEM/clk_gate_r_reg         5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W268
+pipeline_ID_EX                      1550.0243      0.4      0.0000   1544.1790       0.0000  reg_arstn_en_DATA_W297
+pipeline_ID_EX/clk_gate_r_reg          5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W297
+pipeline_IF_ID                       311.8347      0.1      0.0000    305.9894       0.0000  reg_arstn_en_DATA_W96
+pipeline_IF_ID/clk_gate_r_reg          5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W96
+pipeline_MEM_WB                      966.5096      0.2      0.0000    960.6643       0.0000  reg_arstn_en_DATA_W135
+pipeline_MEM_WB/clk_gate_r_reg         5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_DATA_W135
+program_counter                      461.0172      0.1    318.4424      0.0000       0.0000  pc_DATA_W64
+program_counter/mux_branch            29.2266      0.0     29.2266      0.0000       0.0000  mux_2_DATA_W64_1
+program_counter/mux_jump              29.2266      0.0     29.2266      0.0000       0.0000  mux_2_DATA_W64_0
+program_counter/pc_register           84.1217      0.0      0.0000     78.2764       0.0000  reg_arstn_en_64_s00000000
+program_counter/pc_register/clk_gate_r_reg
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_reg_arstn_en_64_s00000000
+regfile_data_mux                     163.9229      0.0    163.9229      0.0000       0.0000  mux_2_DATA_W64_2
+register_file                      21651.0359      5.1   7351.6235  14118.2077       0.0000  register_file_DATA_W64
+register_file/clk_gate_reg_array_reg_10_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_22
+register_file/clk_gate_reg_array_reg_11_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_21
+register_file/clk_gate_reg_array_reg_12_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_20
+register_file/clk_gate_reg_array_reg_13_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_19
+register_file/clk_gate_reg_array_reg_14_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_18
+register_file/clk_gate_reg_array_reg_15_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_17
+register_file/clk_gate_reg_array_reg_16_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_16
+register_file/clk_gate_reg_array_reg_17_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_15
+register_file/clk_gate_reg_array_reg_18_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_14
+register_file/clk_gate_reg_array_reg_19_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_13
+register_file/clk_gate_reg_array_reg_1_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_0
+register_file/clk_gate_reg_array_reg_20_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_12
+register_file/clk_gate_reg_array_reg_21_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_11
+register_file/clk_gate_reg_array_reg_22_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_10
+register_file/clk_gate_reg_array_reg_23_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_9
+register_file/clk_gate_reg_array_reg_24_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_8
+register_file/clk_gate_reg_array_reg_25_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_7
+register_file/clk_gate_reg_array_reg_26_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_6
+register_file/clk_gate_reg_array_reg_27_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_5
+register_file/clk_gate_reg_array_reg_28_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_4
+register_file/clk_gate_reg_array_reg_29_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_3
+register_file/clk_gate_reg_array_reg_2_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_30
+register_file/clk_gate_reg_array_reg_30_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_2
+register_file/clk_gate_reg_array_reg_31_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_1
+register_file/clk_gate_reg_array_reg_3_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_29
+register_file/clk_gate_reg_array_reg_4_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_28
+register_file/clk_gate_reg_array_reg_5_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_27
+register_file/clk_gate_reg_array_reg_6_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_26
+register_file/clk_gate_reg_array_reg_7_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_25
+register_file/clk_gate_reg_array_reg_8_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_24
+register_file/clk_gate_reg_array_reg_9_
+                                       5.8453      0.0      0.0000      5.8453       0.0000  SNPS_CLOCK_GATE_HIGH_register_file_DATA_W64_23
+--------------------------------  -----------  -------  ----------  ----------  -----------  ----------------------------------------------
+Total                                                   26283.5725  18185.5284  379865.8203
+
+
+Area of detected synthetic parts
+--------------------------------
+  No DW parts to report!
+
+Estimated area of ungrouped synthetic parts
+-------------------------------------------
+                                       Estimated  Perc. of
+  Module              Implem.  Count        Area cell area
+  ------------------- -------  ----- ----------- ---------
+  DP_OP_18J3_122_7052     str      1    586.6345      0.1%
+  DP_OP_9J4_122_763       str      1    706.0041      0.2%
+  DW01_add            apparch      1    201.9324      0.0%
+  DW02_mult           apparch      1  10599.3059      2.5%
+  DW_cmp              apparch     10    522.6768      0.1%
+  DW_leftsh              astr      1   1409.7347      0.3%
+  DW_rightsh             astr      1   1438.9608      0.3%
+  ------------------- -------  ----- ----------- ---------
+  DP_OP Subtotal:                  2   1292.6386      0.3%
+  Total:                          16  15465.2493      3.6%
+
+Subtotal of datapath(DP_OP) cell area:  1292.6386  0.3%  (estimated)
+Total synthetic cell area:              15465.2493  3.6%  (estimated)
+
+1
