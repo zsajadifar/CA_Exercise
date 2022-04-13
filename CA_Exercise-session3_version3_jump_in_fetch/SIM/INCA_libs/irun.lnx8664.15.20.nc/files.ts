@@ -1,0 +1,17 @@
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/alu.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/alu_control.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/branch_unit.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/control_unit.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/cpu.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/immediate_extend_unit.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/mux_2.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/pc.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/reg_arstn.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/reg_arstn_en.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/register_file.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/sram.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/cpu_tb.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/saed32sram_mod.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/mux_3.v
+1649831520 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/forward_unit.v
+1649831519 /users/students/r0827611/Documents/CA_Exercise-session3/RTL/hazard_detection.v

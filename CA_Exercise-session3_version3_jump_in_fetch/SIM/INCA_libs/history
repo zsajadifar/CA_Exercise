@@ -1,0 +1,12 @@
+//
+// File created by:  irun
+// Do not modify this file
+
+s1::(10Apr2022:11:15:50):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s2::(10Apr2022:11:51:20):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION -linedebug +gui )
+s3::(10Apr2022:12:53:56):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s4::(12Apr2022:19:47:35):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s5::(13Apr2022:08:13:26):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s6::(13Apr2022:08:15:21):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s7::(13Apr2022:08:23:23):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
+s8::(13Apr2022:08:32:10):( ncverilog +sv -f files_verilog.f +nc64bit +nctimescale+1ns/10ps +access+rwc -ALLOWREDEFINITION )
